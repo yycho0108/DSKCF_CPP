@@ -99,7 +99,7 @@ set(CF_MAIN_SOURCES
     ${CF_CV_EXT_DIR}/tracker_run.cpp
     ${CF_TCLAP_DIR}/tclap/CmdLine.h)
 
-add_executable(DSKCFcpp
+add_library(DSKCF
     src/main/main_dskcf.cpp
     src/cf_libs/kcf/kcf_debug.hpp
     src/cf_libs/kcf/kcf_tracker.hpp
@@ -143,23 +143,16 @@ add_executable(DSKCFcpp
     src/cf_libs/kcf/DepthWeightKCFTracker.cpp
     src/cf_libs/kcf/DepthWeightKCFTracker.h
     ${CF_MAIN_SOURCES}
-    ${CF_LIB_COMMON_SOURCES})
+    ${CF_LIB_COMMON_SOURCES}
+	)
 	
-
-#set_property(TARGET ${TBB_LIBRARIES} PROPERTY DBG_POSTFIX _debug)
-#message("BUILD TYPE = '${CMAKE_BUILD_TYPE}'")
-#target_link_libraries( DSKCFcpp ${OpenCV_LIBS} optimized ${TBB_tbb_LIBRARY_RELEASE} debug ${TBB_tbb_LIBRARY_RELEASE})
-#target_link_libraries( DSKCFcpp ${OpenCV_LIBS} optimized ${TBB_tbb_LIBRARY_RELEASE})
-#target_link_libraries( DSKCFcpp ${OpenCV_LIBS} debug ${TBB_tbb_LIBRARY_RELEASE})
-
-#set(TBB_LIBRARIES optimized ${TBB_LIBRARY} ${TBB_tbb_LIBRARY_RELEASE} debug ${TBB_tbb_LIBRARY_DEBUG})
-#message("FINALLL TBB_LIBRARIES = '${TBB_LIBRARIES}'")
-#target_link_libraries(DSKCFcpp ${OpenCV_LIBS} ${TBB_LIBRARIES})
 IF(CMAKE_BUILD_TYPE MATCHES Release)
 	message("RELEASE")
-    target_link_libraries(DSKCFcpp ${OpenCV_LIBS} ${TBB_tbb_LIBRARY_RELEASE})
+    target_link_libraries(DSKCF ${OpenCV_LIBS} ${TBB_tbb_LIBRARY_RELEASE})
 ELSE()
 	message("DEBUG")
-    target_link_libraries(DSKCFcpp ${OpenCV_LIBS} ${TBB_tbb_LIBRARY_DEBUG})
+    target_link_libraries(DSKCF ${OpenCV_LIBS} ${TBB_tbb_LIBRARY_DEBUG})
 ENDIF(CMAKE_BUILD_TYPE MATCHES Release)
 
+add_executable(DSKCFTest src/main/main_dskcf.cpp)
+target_link_libraries(DSKCFTest DSKCF ${OpenCV_LIBS})
