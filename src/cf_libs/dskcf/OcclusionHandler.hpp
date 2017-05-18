@@ -101,7 +101,7 @@ public:
    *
    * @returns The new bounding box of the target object or the occluder.
    */
-  const Rect detect( const std::array< cv::Mat, 2 > & frame, const Point & position );
+  const Rect detect( const std::array< cv::Mat, 2 > & frame, const Point & position, Point& est);
 
   /**
    * Update the tracker's model

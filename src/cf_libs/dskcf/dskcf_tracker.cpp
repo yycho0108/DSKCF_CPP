@@ -23,7 +23,9 @@ bool DskcfTracker::update(const std::array< cv::Mat, 2 > & frame, Rect & boundin
 {
 	Point position = centerPoint(boundingBox);
 
-	boundingBox = (this->m_occlusionHandler->detect(frame, position));
+	Point est;
+	boundingBox = (this->m_occlusionHandler->detect(frame, position, est));
+	std::cout << position << ";" <<  est << std::endl;
 
 	position = centerPoint(boundingBox);
 
@@ -39,7 +41,10 @@ bool DskcfTracker::update(const std::array< cv::Mat, 2 > & frame, cv::Rect_<doub
 
 	Point position = centerPoint(boundingBox);
 
-	boundingBox = (this->m_occlusionHandler->detect(frame, position));
+	Point est;
+
+	boundingBox = (this->m_occlusionHandler->detect(frame, position, est));
+	std::cout << position << ";" << est << std::endl;
 
 	position = centerPoint(boundingBox);
 

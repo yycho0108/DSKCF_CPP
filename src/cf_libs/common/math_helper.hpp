@@ -486,11 +486,13 @@ bool getSubWindow(const cv::Mat& image, cv::Mat& patch, const cv::Size_<T>& size
 
   cv::Rect imageRect(0, 0, image.cols, image.rows);
   cv::Rect subRect(xs, ys, width, height);
+  //std::cout << "subRect : " << subRect << std::endl;
   subRect &= imageRect;
   cv::Mat subWindow = image(subRect);
 
   if (subWindow.cols == 0 || subWindow.rows == 0)
   {
+	  std::cout << " 1 !@#@#@! " << std::endl;
     return false;
   }
 
@@ -507,8 +509,12 @@ bool getSubWindow(const cv::Mat& image, cv::Mat& patch, const cv::Size_<T>& size
 
   // this if can be true if the sub window
   // is completely outside the image
-  if (width != subWindow.cols || height != subWindow.rows)
+  if (width != subWindow.cols || height != subWindow.rows){
+	  std::cout << " 2 !@#@#@! " << std::endl;
       return false;
+  }
+
+
 
   if (posInSubWindow != 0)
   {

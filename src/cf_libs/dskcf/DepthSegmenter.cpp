@@ -8,6 +8,57 @@ typedef cv::Size_< double > Size;
 typedef cv::Rect_< double > Rect;
 typedef cv::Point_< double > Point;
 
+std::string getImageType(int number)
+{
+    // find type
+    int imgTypeInt = number%8;
+    std::string imgTypeString;
+
+    switch (imgTypeInt)
+    {
+        case 0:
+            imgTypeString = "8U";
+            break;
+        case 1:
+            imgTypeString = "8S";
+            break;
+        case 2:
+            imgTypeString = "16U";
+            break;
+        case 3:
+            imgTypeString = "16S";
+            break;
+        case 4:
+            imgTypeString = "32S";
+            break;
+        case 5:
+            imgTypeString = "32F";
+            break;
+        case 6:
+            imgTypeString = "64F";
+            break;
+        default:
+            break;
+    }
+
+    // find channel
+    int channel = (number/8) + 1;
+
+    std::stringstream type;
+    type<<"CV_"<<imgTypeString<<"C"<<channel;
+
+    return type.str();
+}
+
+
+void tell(const std::string name, const cv::Mat& m){
+	std::cout << "====" << name << "====" << std::endl;
+	std::cout << "type : " << getImageType(m.type()) << std::endl;
+	//std::cout << "dims : " << m.dims << std::endl;
+	//std::cout << "chans : " << m.channels() << std::endl;
+	std::cout << "size (cols x rows): " << m.size() << std::endl;
+	std::cout << "========" << std::endl;
+}
 DepthSegmenter::DepthSegmenter()
 {
 	this->m_targetDepth = 0.0;
@@ -15,19 +66,46 @@ DepthSegmenter::DepthSegmenter()
 	this->minSTD=20;
 }
 
-cv::Mat1i DepthSegmenter::init( const cv::Mat & image, const Rect & boundingBox )
+cv::Mat1i DepthSegmenter::init( const cv::Mat& image3, const Rect & boundingBox )
 {
+	std::cout << "===============================================================!!=" << std::endl;
+	cv::Mat bgr[3];
+	cv::split(image3, bgr);
+	cv::Mat& image = bgr[0];
+
 	//Extract the target region of interest from the depth image
 	Size windowSize = boundingBox.size();
 	Point windowPosition = centerPoint( boundingBox );
+	//std::cout << "ws : " << windowSize << std::endl;
+	//std::cout << "wp : " << windowPosition << std::endl;
+
+	cv::Mat test;// = bgr[0] - bgr[1];
+	//cv::absdiff(bgr[0], bgr[1], test);
+	tell("bgr0", bgr[0]);
+
+	//tell("bgr1", bgr[1]); --> empty
+	//tell("bgr2", bgr[2]);
+	
+	//tell("test", test);
+
+	//tell("image", image);
+	//tell("diff", test);
+
+	cv::imshow("depth", image); // depth image
 
 	cv::Mat1w front_depth;
+	std::cout << "===============================================================!!=" << std::endl;
 	if( getSubWindow( image, front_depth, windowSize, windowPosition  ) )
 	{
+	std::cout << "===============================================================!!=" << std::endl;
+		cv::imshow("front_depth", front_depth);
+
 		cv::Scalar mean, stddev;
 
 		//Find and store the empty depth values to be excluded from the histogram
 		cv::Mat1b mask = createMask( front_depth );
+		cv::imshow("mask", mask);
+		cv::waitKey(0);
 
 		//Create the histogram of depths in the region excluding the masked
 		this->m_histogram = DepthHistogram::createHistogram( 50, front_depth, mask );
@@ -139,10 +217,11 @@ const DepthHistogram & DepthSegmenter::getHistogram() const
 {
 	return this->m_histogram;
 }
-
 const cv::Mat1b DepthSegmenter::createLabelImage( const cv::Mat1w & region, const cv::Mat1b mask,
                                                   const std::vector< float > & C, const std::vector< int > & labels ) const
 {
+	//tell("region", region);
+	//tell("mask", mask);
 	double min, max;
 	cv::Mat1b L = cv::Mat1b::zeros( region.rows, region.cols );
 

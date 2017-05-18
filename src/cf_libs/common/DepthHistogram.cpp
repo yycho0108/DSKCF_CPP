@@ -264,62 +264,79 @@ const float DepthHistogram::operator[]( const uint i ) const
   return this->m_bins( i );
 }
 
+//void tell(const std::string name, const cv::Mat& m){
+//	std::cout << "====" << name << "====" << std::endl;
+//	std::cout << "rows : " << m.rows << std::endl;
+//	std::cout << "cols : " << m.cols << std::endl;
+//	std::cout << "dims : " << m.dims << std::endl;
+//	std::cout << "chans : " << m.channels() << std::endl;
+//	std::cout << "size : " << m.size() << std::endl;
+//	std::cout << "========" << std::endl;
+//}
 const DepthHistogram DepthHistogram::createHistogram( const uint step, const cv::Mat & region, const cv::Mat1b & mask )
 {
-  cv::Mat1f region32f;
-  DepthHistogram result;
-  int histogramBinCount = 0;
+	cv::Mat1f region32f;
+	DepthHistogram result;
+	int histogramBinCount = 0;
 
-  region.convertTo( region32f, CV_32F );
-  cv::minMaxLoc( region32f, &result.m_minimum, &result.m_maximum, nullptr, nullptr, mask );
+	//tell("gray", gray);
+	region.convertTo( region32f, CV_32F );
+	//tell("region32f", region32f);
 
+	cv::Mat maskc1 = mask.reshape(1);
+	cv::Mat region32fc1 = region32f.reshape(1);
+	//tell("maskc1", maskc1);
+	//tell("region32fc1", region32fc1);
 
-
-  if( step == 0 )
-  {
-	
-    histogramBinCount = std::max( 1, cvRound( ( result.m_maximum - result.m_minimum ) / 50.0 )+1 );//modified here
-	result.m_minimum-=25;
-	result.m_maximum += 25;
-  }
-  else
-  {
-    histogramBinCount = std::max( 1, cvRound( ( result.m_maximum - result.m_minimum ) / static_cast< double >( step ) ) +1 );//modified here
-	result.m_minimum-=static_cast< double >( step )/2;
-	result.m_maximum += static_cast< double >( step )/2;
-  }
-
-  //change this bit with incrementing the number of bin
-  //result.m_maximum += modelNoise( result.m_maximum, 0 );
-  histogramBinCount++;
+	cv::minMaxLoc( region32f, &result.m_minimum, &result.m_maximum, nullptr, nullptr, mask );
 
 
-  int channels = 0;
-  float hist_range[] = { static_cast< float >( result.m_minimum ), static_cast< float >( result.m_maximum ) };
-  const float * hist_ranges[] = { hist_range };
 
-  cv::calcHist( &region32f, 1, &channels, cv::Mat(), result.m_bins, 1, &histogramBinCount, hist_ranges );
+	if( step == 0 )
+	{
 
-  result.estimatedStep=( 1.0 / (float)result.size() ) * ( result.m_maximum - result.m_minimum );
+		histogramBinCount = std::max( 1, cvRound( ( result.m_maximum - result.m_minimum ) / 50.0 )+1 );//modified here
+		result.m_minimum-=25;
+		result.m_maximum += 25;
+	}
+	else
+	{
+		histogramBinCount = std::max( 1, cvRound( ( result.m_maximum - result.m_minimum ) / static_cast< double >( step ) ) +1 );//modified here
+		result.m_minimum-=static_cast< double >( step )/2;
+		result.m_maximum += static_cast< double >( step )/2;
+	}
 
-  return result;
+	//change this bit with incrementing the number of bin
+	//result.m_maximum += modelNoise( result.m_maximum, 0 );
+	histogramBinCount++;
+
+
+	int channels = 0;
+	float hist_range[] = { static_cast< float >( result.m_minimum ), static_cast< float >( result.m_maximum ) };
+	const float * hist_ranges[] = { hist_range };
+
+	cv::calcHist( &region32f, 1, &channels, cv::Mat(), result.m_bins, 1, &histogramBinCount, hist_ranges );
+
+	result.estimatedStep=( 1.0 / (float)result.size() ) * ( result.m_maximum - result.m_minimum );
+
+	return result;
 }
 
 void DepthHistogram::visualise( const std::string & string )
 {
-  visualiseHistogram( string, this->m_bins );
+	visualiseHistogram( string, this->m_bins );
 }
 
 const int DepthHistogram::depthToCentroid( const double depth, const std::vector< float > & centroids ) const
 {
-  //double histDepth = this->m_bins.rows * ( ( depth - this->m_minimum ) / ( this->m_maximum - this->m_minimum ) );
-  double histDepth=this->depthToBin(depth);
-  std::vector< double > peakTranslated( centroids.size() );
+	//double histDepth = this->m_bins.rows * ( ( depth - this->m_minimum ) / ( this->m_maximum - this->m_minimum ) );
+	double histDepth=this->depthToBin(depth);
+	std::vector< double > peakTranslated( centroids.size() );
 
-  for( uint i = 0; i < centroids.size(); i++ )
-  {
-    peakTranslated[ i ] = std::abs( centroids[ i ] - histDepth );
-  }
+	for( uint i = 0; i < centroids.size(); i++ )
+	{
+		peakTranslated[ i ] = std::abs( centroids[ i ] - histDepth );
+	}
 
-  return std::min_element( peakTranslated.begin(), peakTranslated.end() ) - peakTranslated.begin();
+	return std::min_element( peakTranslated.begin(), peakTranslated.end() ) - peakTranslated.begin();
 }

@@ -384,7 +384,12 @@ bool TrackerRun::update()
 
     if( _paras.useDepth )
     {
-      _cap[ 1 ] >> _image[ 1 ];
+		Mat dummy;
+		Mat dummy_2[3];
+      _cap[ 1 ] >> dummy;//_image[ 1 ];
+	  cv::split(dummy, dummy_2);
+	  dummy_2[0].copyTo(_image[1]);
+	  //_image[1] = dummy_2[0].clone();
     }
 
     if (_image[ 0 ].empty())

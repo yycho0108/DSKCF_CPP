@@ -11,7 +11,7 @@ KalmanFilter2D::~KalmanFilter2D()
 
 void KalmanFilter2D::initialise( const cv::Point_< double > & position )
 {
-  this->m_filter.init( 4, 2, 0, CV_64F );
+  this->m_filter.init( 4, 2, 0, CV_64F ); //x, y, vx, vy
   this->m_filter.transitionMatrix = (cv::Mat_< double >( 4, 4 ) << 1,0,1,0,  0,1,0,1,  0,0,1,0,  0,0,0,1);
   this->m_filter.statePre.at< double >( 0 ) = position.x;
   this->m_filter.statePre.at< double >( 1 ) = position.y;
@@ -32,7 +32,7 @@ const cv::Point_< double > KalmanFilter2D::getPrediction()
   cv::Point_< double > result;
   cv::Mat1d prediction = this->m_filter.predict();
 
-  result.x = prediction( 0 ); result.y = prediction( 1 );
+  result.x = prediction( 2 ); result.y = prediction( 3 );
 
   return result;
 }

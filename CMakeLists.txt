@@ -38,7 +38,7 @@ if(CMAKE_COMPILER_IS_GNUCC)
 endif(CMAKE_COMPILER_IS_GNUCC)
 
 # add OpenCV
-set(OPENCV_DIR_HINT "")
+set(OPENCV_DIR_HINT "$ENV{HOME}/Documents/opencv/build/")
 
 if(WIN32)
     get_filename_component(OPENCV_DIR_PLATFORM $ENV{OPENCV_DIR} DIRECTORY)
@@ -152,14 +152,14 @@ add_executable(DSKCFcpp
 #target_link_libraries( DSKCFcpp ${OpenCV_LIBS} optimized ${TBB_tbb_LIBRARY_RELEASE})
 #target_link_libraries( DSKCFcpp ${OpenCV_LIBS} debug ${TBB_tbb_LIBRARY_RELEASE})
 
-set(TBB_LIBRARIES optimized ${TBB_LIBRARY} ${TBB_tbb_LIBRARY_RELEASE} debug ${TBB_tbb_LIBRARY_DEBUG})
-message("FINALLL TBB_LIBRARIES = '${TBB_LIBRARIES}'")
-target_link_libraries(DSKCFcpp ${OpenCV_LIBS} ${TBB_LIBRARIES})
-#IF(CMAKE_BUILD_TYPE MATCHES Release)
-#	message("RELEASE")
-#    target_link_libraries(DSKCFcpp ${OpenCV_LIBS} ${TBB_tbb_LIBRARY_RELEASE})
-#ELSE()
-#	message("DEBUG")
-#    target_link_libraries(DSKCFcpp ${OpenCV_LIBS} ${TBB_tbb_LIBRARY_DEBUG})
-#ENDIF(CMAKE_BUILD_TYPE MATCHES Release)
+#set(TBB_LIBRARIES optimized ${TBB_LIBRARY} ${TBB_tbb_LIBRARY_RELEASE} debug ${TBB_tbb_LIBRARY_DEBUG})
+#message("FINALLL TBB_LIBRARIES = '${TBB_LIBRARIES}'")
+#target_link_libraries(DSKCFcpp ${OpenCV_LIBS} ${TBB_LIBRARIES})
+IF(CMAKE_BUILD_TYPE MATCHES Release)
+	message("RELEASE")
+    target_link_libraries(DSKCFcpp ${OpenCV_LIBS} ${TBB_tbb_LIBRARY_RELEASE})
+ELSE()
+	message("DEBUG")
+    target_link_libraries(DSKCFcpp ${OpenCV_LIBS} ${TBB_tbb_LIBRARY_DEBUG})
+ENDIF(CMAKE_BUILD_TYPE MATCHES Release)
 

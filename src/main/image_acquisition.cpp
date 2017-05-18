@@ -64,7 +64,7 @@ void ImageAcquisition::set(int key, int value)
     if (!_paras.isMock)
         _cvCap.set(key, value);
 }
-
+#include <iostream>
 void ImageAcquisition::open(ImgAcqParas paras)
 {
     _paras = paras;
@@ -81,6 +81,7 @@ void ImageAcquisition::open(ImgAcqParas paras)
         {
             std::string sequenceExpansion =
                 _paras.sequencePath + _paras.expansionStr;
+			std::cout << "STR : " <<  sequenceExpansion << std::endl;
 
             _cvCap.open(sequenceExpansion);
         }
