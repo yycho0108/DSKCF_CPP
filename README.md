@@ -1,11 +1,11 @@
 -----------------------------------------------------------------
-#DS-KCF: A real-time tracker for RGB-D data#
+# DS-KCF: A real-time tracker for RGB-D data#
 -----------------------------------------------------------------
 
 ## Addendum
 This is a fork from [DSKCF\_CPP](https://github.com/mcamplan/DSKCF\_CPP).
 
-##Introduction
+## Introduction
 This is an open source implementation of **"DS-KCF: A real-time tracker for RGB-D data"** [1]. 
 The code provide a real time C++ implementation of the DS-KCF RGBD tracker as presented in [1]
 The code provided guarantees an average processing throughput of more than 180 frame per second
@@ -17,7 +17,7 @@ DS-KCF: A real-time tracker for RGB-D data, Journal of Real-Time Image Processin
 http://dx.doi.org/10.1007/s11554-016-0654-3
 
 
-##Build
+## Build
 
 This project can be compiled and used in both in Windows Linux operating system enviroments.
 This project has been tested in Windows 7 (VS2013 and VS2010) and Linux (Ubuntu 14.04) with g++.

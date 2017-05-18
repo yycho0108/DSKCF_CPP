@@ -32,7 +32,7 @@ const cv::Point_< double > KalmanFilter2D::getPrediction()
   cv::Point_< double > result;
   cv::Mat1d prediction = this->m_filter.predict();
 
-  result.x = prediction( 2 ); result.y = prediction( 3 );
+  result.x = prediction( 0 ); result.y = prediction( 1 );
 
   return result;
 }

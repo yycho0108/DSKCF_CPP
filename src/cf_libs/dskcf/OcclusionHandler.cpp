@@ -72,8 +72,7 @@ const Rect OcclusionHandler::detect( const std::array< cv::Mat, 2 > & frame, con
 	}
 	else
 	{
-		est = m_filter.getPrediction(); // velocity currently
-		m_filter.getEstimate(position);
+		est = m_filter.getPrediction(); // estimate
 		return this->visibleDetect( frame, position);
 	}
 }
@@ -86,6 +85,7 @@ void OcclusionHandler::update( const std::array< cv::Mat, 2 > & frame, const Poi
 	}
 	else
 	{
+		m_filter.getEstimate(position); // correction
 		return this->visibleUpdate( frame, position );
 	}
 }
