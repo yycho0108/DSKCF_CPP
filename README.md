@@ -5,6 +5,38 @@
 ## Addendum
 This is a fork from [DSKCF\_CPP](https://github.com/mcamplan/DSKCF\_CPP).
 
+Dataset is available [here](http://tracking.cs.princeton.edu/ValidationSet.zip).
+
+To make the dataset compatible, run cvt.bash as follows:
+
+### Dataset Conversion
+
+```bash
+## EXAMPLE
+mkdir data && cd data
+wget ${DATA_ZIP_URL} && unzip ${DATA_ZIP}
+cd ../
+./cvt_bash data/ValidationSet/bear_front/rgb/
+./cvt_bash data/ValidationSet/bear_front/depth/
+```
+
+### Building
+
+```bash
+mkdir -p build
+cd build
+cmake ../ -DCMAKE_BUILD_TYPE=Release
+make -j8
+```
+
+### Running
+
+```bash
+./run.bash
+```
+
+Below are the contents of the original README : 
+
 ## Introduction
 This is an open source implementation of **"DS-KCF: A real-time tracker for RGB-D data"** [1]. 
 The code provide a real time C++ implementation of the DS-KCF RGBD tracker as presented in [1]

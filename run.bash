@@ -1,9 +1,13 @@
 #!/bin/bash
 
+## BUILD
+mkdir -p build
 pushd build
+cmake ../ -DCMAKE_BUILD_TYPE=Release
 make -j8
 popd
 
+## RUN
 function run_dskcf(){
 	pushd build
 	local bbox=$1
